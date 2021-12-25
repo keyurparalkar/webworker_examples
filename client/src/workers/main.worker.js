@@ -5,34 +5,18 @@
 
 let socketInstance = null;
 
-function createInstance() {
+function createSocketInstance() {
   let socket = new WebSocket("ws://localhost:8080");
 
   return socket;
 }
 
-// eslint-disable-next-line no-restricted-globals
-self.onmessage = function (e) {
-  console.log("Worker object present ", e);
-  // let socketInstances = [];
-
-  //Started Socket code =====================================================
-  // let socket = new WebSocket("ws://localhost:8080");
-  // postMessage({ socket: JSON.stringify(socket) });
-  // socketInstances.push(socket);
-  if(e.data.connectionStatus === "init"){
-    socketInstance = createInstance();
-  }
-
-  if(e.data.connectionStatus === "stop") {
-    socketInstance.close();
-  }
-
-  if(socketInstance){
+function socketManagement() {
+  if (socketInstance) {
     socketInstance.onopen = function (e) {
       console.log("[open] Connection established");
       socketInstance.send(JSON.stringify({ socketStatus: true }));
-      postMessage({ disableStartButton: true});
+      postMessage({ disableStartButton: true });
     };
 
     socketInstance.onmessage = function (event) {
@@ -40,7 +24,6 @@ self.onmessage = function (e) {
     };
 
     socketInstance.onclose = function (event) {
-      console.log("ON CLOSE = ", event);
       if (event.wasClean) {
         console.log(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
       } else {
@@ -53,16 +36,25 @@ self.onmessage = function (e) {
     socketInstance.onerror = function (error) {
       console.log(`[error] ${error.message}`);
       socketInstance.close();
-      console.log("Connection closed due to error");
     };
-    //Socket code ends here =====================================================
   }
+}
 
+//SWITCH CASE: SOCKET MANAGEMENT:
+// eslint-disable-next-line no-restricted-globals
+self.onmessage = function (e) {
+  const workerData = e.data;
+  switch (workerData.connectionStatus) {
+    case "init":
+      socketInstance = createSocketInstance();
+      socketManagement();
+      break;
 
-  // const workerData = e.data;
-  // // console.log("SOCKET INSTANCESs = ", socketInstances);
-  // if (workerData?.connectionStatus === false) {
-  //   socketInstances[0].close();
-  //   // postMessage({ disableStopButton: true });
-  // }
+    case "stop":
+      socketInstance.close();
+      break;
+
+    default:
+      socketManagement();
+  }
 }
