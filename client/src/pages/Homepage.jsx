@@ -8,14 +8,16 @@ const Homepage = () => {
   const [res, setRes] = useState(null);
 
   const hanldeStartConnection = () => {
-    /**
-     * 1. Send the message to the worker [postMessage]
-     */
+    // Send the message to the worker [postMessage]
+    worker.postMessage({
+      connectionStatus: "init",
+    });
+  };
 
-    const data = {
-      connectionStatus: true,
-    };
-    worker.postMessage({ ...data });
+  const handleStopConnection = () => {
+    worker.postMessage({
+      connectionStatus: "stop",
+    });
   };
 
   useEffect(() => {
@@ -47,7 +49,13 @@ const Homepage = () => {
       >
         Start Connection
       </button>
-      <button id="stop-connection">Stop Connection</button>
+      <button
+        id="stop-connection"
+        onClick={handleStopConnection}
+        disabled={!res?.disableStartButton}
+      >
+        Stop Connection
+      </button>
       <div className="state">{JSON.stringify(res)}</div>
     </>
   );
