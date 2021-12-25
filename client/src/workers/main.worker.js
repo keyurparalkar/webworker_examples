@@ -11,7 +11,7 @@ self.onmessage = function (e) {
   //Started Socket code =====================================================
   socket.onopen = function (e) {
     console.log("[open] Connection established");
-    socket.send({socketStatus: true});
+    socket.send(JSON.stringify({socketStatus: true}));
     postMessage({disableStartButton: true});
   };
 
