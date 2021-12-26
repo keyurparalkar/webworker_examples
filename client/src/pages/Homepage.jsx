@@ -1,11 +1,12 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import LineChartComponent from "../components/LineChartSocket";
 
 /**
  * 1. postMessage payload = {<Field>: ...}
  */
 const Homepage = () => {
   const [worker, setWorker] = useState(null);
-  const [res, setRes] = useState(null);
+  const [res, setRes] = useState([]);
 
   const hanldeStartConnection = () => {
     // Send the message to the worker [postMessage]
@@ -34,7 +35,9 @@ const Homepage = () => {
   useEffect(() => {
     if (worker) {
       worker.onmessage = function (e) {
-        setRes(e.data);
+        if(typeof e.data === "string"){
+          setRes((prevRes) => [...prevRes, {stockPrice: e.data}]);
+        }
       };
     }
   }, [worker]);
@@ -52,11 +55,11 @@ const Homepage = () => {
       <button
         id="stop-connection"
         onClick={handleStopConnection}
-        disabled={!res?.disableStartButton}
+        // disabled={!res?.disableStartButton}
       >
         Stop Connection
       </button>
-      <div className="state">{JSON.stringify(res)}</div>
+      <LineChartComponent data={res}/>
     </>
   );
 };

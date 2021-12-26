@@ -21,6 +21,7 @@ function socketManagement() {
 
     socketInstance.onmessage = function (event) {
       console.log(`[message] Data received from server: ${event.data}`);
+      postMessage( event.data);
     };
 
     socketInstance.onclose = function (event) {
@@ -31,6 +32,7 @@ function socketManagement() {
         // event.code is usually 1006 in this case
         console.log('[close] Connection died');
       }
+      postMessage({ disableStartButton: false });
     };
 
     socketInstance.onerror = function (error) {
