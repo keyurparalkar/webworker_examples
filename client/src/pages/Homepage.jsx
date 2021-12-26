@@ -7,6 +7,7 @@ import LineChartComponent from "../components/LineChartSocket";
 const Homepage = () => {
   const [worker, setWorker] = useState(null);
   const [res, setRes] = useState([]);
+  const [buttonState, setButtonState] = useState(false);
 
   const hanldeStartConnection = () => {
     // Send the message to the worker [postMessage]
@@ -38,6 +39,10 @@ const Homepage = () => {
         if(typeof e.data === "string"){
           setRes((prevRes) => [...prevRes, {stockPrice: e.data}]);
         }
+
+        if(typeof e.data === "object"){
+          setButtonState(e.data.disableStartButton);
+        }
       };
     }
   }, [worker]);
@@ -48,14 +53,14 @@ const Homepage = () => {
       <button
         id="start-connection"
         onClick={hanldeStartConnection}
-        disabled={!worker || res?.disableStartButton}
+        disabled={!worker || buttonState}
       >
         Start Connection
       </button>
       <button
         id="stop-connection"
         onClick={handleStopConnection}
-        // disabled={!res?.disableStartButton}
+        disabled={!buttonState}
       >
         Stop Connection
       </button>
