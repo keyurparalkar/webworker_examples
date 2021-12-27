@@ -65,6 +65,7 @@ const Homepage = () => {
           >
             Start Connection
           </button>
+          &nbsp;
           <button
             id="stop-connection"
             onClick={handleStopConnection}

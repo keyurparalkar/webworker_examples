@@ -8,7 +8,7 @@ const LineChartComponent = ({ data }) => {
   return (
     <>
       <LineChart
-        width={500}
+        width={600}
         height={300}
         data={data}
         margin={{
@@ -19,8 +19,8 @@ const LineChartComponent = ({ data }) => {
         }}
       >
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="name" />
-        <YAxis />
+        <XAxis ticks={[""]}/>
+        <YAxis ticks={[1, 5, 10, 15]}/>
         <Tooltip />
         <Legend />
         <Line

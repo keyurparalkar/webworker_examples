@@ -16,7 +16,7 @@ wss.on('connection', function connection(ws) {
       setInterval(() => {
         counter = getRandomIntInclusive(1, 15);
         ws.send(counter);
-      }, 1000);
+      }, 1500);
     }
   });
 });
