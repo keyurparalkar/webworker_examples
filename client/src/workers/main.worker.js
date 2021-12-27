@@ -15,6 +15,7 @@ function socketManagement() {
   if (socketInstance) {
     socketInstance.onopen = function (e) {
       console.log("[open] Connection established");
+      postMessage("[SOCKET] Connection established");
       socketInstance.send(JSON.stringify({ socketStatus: true }));
       postMessage({ disableStartButton: true });
     };
@@ -26,17 +27,20 @@ function socketManagement() {
 
     socketInstance.onclose = function (event) {
       if (event.wasClean) {
-        console.log(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
+        console.log(`[close] Connection closed cleanly, code=${event.code}`);
+        postMessage(`[SOCKET] Connection closed cleanly, code=${event.code}`);
       } else {
         // e.g. server process killed or network down
         // event.code is usually 1006 in this case
         console.log('[close] Connection died');
+        postMessage('[SOCKET] Connection died');
       }
       postMessage({ disableStartButton: false });
     };
 
     socketInstance.onerror = function (error) {
       console.log(`[error] ${error.message}`);
+      postMessage(`[SOCKET] ${error.message}`);
       socketInstance.close();
     };
   }
@@ -46,6 +50,7 @@ function socketManagement() {
 // eslint-disable-next-line no-restricted-globals
 self.onmessage = function (e) {
   const workerData = e.data;
+  postMessage("[WORKER] Web worker onmessage established");
   switch (workerData.connectionStatus) {
     case "init":
       socketInstance = createSocketInstance();
