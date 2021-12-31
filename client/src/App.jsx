@@ -1,10 +1,10 @@
 import './App.css';
-import Multiplication from './pages/Multiplication';
+import Homepage from './pages/Homepage';
 
 function App() {
   return (
     <div className="App">
-      <Multiplication />
+      <Homepage />
     </div>
   );
 }
